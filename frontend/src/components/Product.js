@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
+import Rating from './Rating'
 
 export class Product extends Component {
    
@@ -16,9 +17,7 @@ export class Product extends Component {
                             <strong>{product.name}</strong>
                         </Card.Title>
                         <Card.Text>
-                            <div className="my-3">
-                                {product.rating} from {product.numReviews} reviews
-                            </div>
+                            <Rating value={product.rating} text={`${product.numReviews} reviews`} />
                         </Card.Text>
                         <Card.Text as='h3'>
                             {product.price} €

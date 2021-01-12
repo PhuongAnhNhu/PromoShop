@@ -9,9 +9,9 @@ export class HomeScreen extends Component {
       <div>
         <h1>Lastest products</h1>
         <Row>
-          {products.map((product) => (
-            <Col sm={12} md={6}>
-              <Product product={product}/>
+          {products.map((item) => (
+            <Col sm={12} md={6} key={item._id}>
+              <Product product={item}/>
             </Col>
           ))}
         </Row>
