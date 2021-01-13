@@ -1,13 +1,30 @@
 import React, { Component } from "react";
 import { Col, ListGroup, Row, Image, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import products from "../products";
 import Rating from "../components/Rating";
-
+import axios from "axios";
 export class ProductScreen extends Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      product: {},
+    };
+  }
+  componentDidMount() {
+    //componentDidMount Methode wird ausgeführt nachdem die Komponenten in das DOM gerendert wurde.
+    const id = this.props.match.params.id
+    const fetchProduct = async () => {
+      const { data } = await axios.get(`/api/products/${id}`);
+      this.setState({product: data});
+    };
+    fetchProduct();
+  }
+
+
   render() {
-    const id = this.props.match.params.id;
-    const product = products.find((p) => p._id === id);
+    // const id = this.props.match.params.id;
+    // const product = products.find((p) => p._id === id);
     return (
       <div>
         <Link className="btn btn-dark my-3" to="/">
@@ -15,22 +32,22 @@ export class ProductScreen extends Component {
         </Link>
         <Row>
           <Col md={6}>
-            <Image src={product.image} alt={product.name} fluid></Image>
+            <Image src={this.state.product.image} alt={this.state.product.name} fluid></Image>
           </Col>
           <Col md={3}>
             <ListGroup variant="flush">
               <ListGroup.Item>
-                <h3>{product.name}</h3>
+                <h3>{this.state.product.name}</h3>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Rating
-                  value={product.rating}
-                  text={`${product.numReviews} reviews`}
+                  value={this.state.product.rating}
+                  text={`${this.state.product.numReviews} reviews`}
                 ></Rating>
               </ListGroup.Item>
-              <ListGroup.Item>Price: {product.price} €</ListGroup.Item>
+              <ListGroup.Item>Price: {this.state.product.price} €</ListGroup.Item>
               <ListGroup.Item>
-                Description: {product.description}
+                Description: {this.state.product.description}
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -41,7 +58,7 @@ export class ProductScreen extends Component {
                   <Row>
                     <Col>Price:</Col>
                     <Col>
-                      <strong>{product.price}</strong>
+                      <strong>{this.state.product.price}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -50,13 +67,13 @@ export class ProductScreen extends Component {
                   <Row>
                     <Col>Status:</Col>
                     <Col>
-                      <strong>{product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}</strong>
+                      <strong>{this.state.product.countInStock > 0 ? 'In Stock' : 'Out of Stock'}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
 
                 <ListGroup.Item>
-                    <Button className="btn-block" type="button" disabled={product.countInStock === 0}>
+                    <Button className="btn-block" type="button" disabled={this.state.product.countInStock === 0}>
                         Add To Cart
                     </Button>
                 </ListGroup.Item>
