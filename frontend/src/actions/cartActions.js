@@ -22,7 +22,7 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
     );
 };
 
-export const removeFromCart = id => (dispatch, getState) => {
+export const removeFromCart = (id) => (dispatch, getState) => {
     dispatch({
         type: CART_REMOVE_ITEM,
         payload: id,
