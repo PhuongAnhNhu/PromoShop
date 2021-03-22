@@ -5,17 +5,22 @@ import colors from "colors";
 import { notFound, errorHandler } from './middleware/errorMiddlerware.js'
 
 import productRoutes from "./routes/productRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 dotenv.config();
 
 connectDB();
 
 const app = express();
 
+/** accept JSON Data in the body of POST request*/
+app.use(express.json());
+
 app.get("/api", (req, res) => {
   res.send("API is running...");
 });
 
 app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
 
 app.use(notFound);
 
