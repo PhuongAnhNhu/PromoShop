@@ -27,14 +27,14 @@ const ProfileScreen = ({ location, history }) => {
         if (!userInfo) {
             history.push('/login');
         } else {
-            if (!user.name) {
-                dispatch(getUserDetails('profile'));
-            } else {
-                setName(user.name);
-                setEmail(user.email);
-            }
+            dispatch(getUserDetails('profile'));
         }
-    }, [dispatch, history, userInfo, user]);
+    }, [userInfo]);
+
+    useEffect(() => {
+        setName(user?.name);
+        setEmail(user?.email);
+    }, [userDetails])
 
     const submitHandler = e => {
         e.preventDefault();
@@ -101,7 +101,7 @@ const ProfileScreen = ({ location, history }) => {
                     <Button
                         type="submit"
                         variant="primary"
-                        onclick={submitHandler}
+                        onClick={submitHandler}
                     >
                         Update
                     </Button>
