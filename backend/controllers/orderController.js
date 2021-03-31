@@ -2,9 +2,9 @@ import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 
 //@desc Create new order
-//@route GET /api/oders
+//@route GET /api/orders
 //@acess Private
-const addOdersItems = asyncHandler(async (req, res) => {
+const addOrdersItems = asyncHandler(async (req, res) => {
     const {
         orderItems,
         shippingAddress,
@@ -30,9 +30,9 @@ const addOdersItems = asyncHandler(async (req, res) => {
             shippingPrice,
             totalPrice,
         });
-        const createdOder = await order.save();
-        res.status(201).json(createdOder);
+        const createdOrder = await order.save();
+        res.status(201).json(createdOrder);
     }
 });
 
-export { addOdersItems };
+export { addOrdersItems };

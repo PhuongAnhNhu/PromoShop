@@ -29,12 +29,12 @@ const ProfileScreen = ({ location, history }) => {
         } else {
             dispatch(getUserDetails('profile'));
         }
-    }, [userInfo]);
+    }, [dispatch, history,userInfo]);
 
     useEffect(() => {
         setName(user?.name);
         setEmail(user?.email);
-    }, [userDetails])
+    }, [user?.name,user?.email,userDetails])
 
     const submitHandler = e => {
         e.preventDefault();
@@ -108,7 +108,7 @@ const ProfileScreen = ({ location, history }) => {
                 </Form>
             </Col>
             <Col md={9}>
-                <h2>My Oders</h2>
+                <h2>My Orders</h2>
             </Col>
         </Row>
     );
