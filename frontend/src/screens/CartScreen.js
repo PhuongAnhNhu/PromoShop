@@ -47,8 +47,8 @@ const CartScreen = ({ match, location, history }) => {
                     </Message>
                 ) : (
                     <ListGroup>
-                        {cartItems.map(item => (
-                            <ListGroup.Item key={item.productId}>
+                        {cartItems.map((item, index) => (
+                            <ListGroup.Item key={index}>
                                 <Row>
                                     <Col md={2}>
                                         <Image
@@ -81,9 +81,9 @@ const CartScreen = ({ match, location, history }) => {
                                                 ...Array(
                                                     item.countInStock
                                                 ).keys(),
-                                            ].map(x => (
+                                            ].map((x, index) => (
                                                 <option
-                                                    key={x + 1}
+                                                    key={index}
                                                     value={x + 1}
                                                 >
                                                     {x + 1}
