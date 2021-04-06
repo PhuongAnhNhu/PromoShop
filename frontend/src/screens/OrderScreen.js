@@ -27,9 +27,11 @@ const OrderScreen = ({ match }) => {
     }
 
     useEffect(() => {
-        dispatch(getOrderDetails(orderId));
+        if (!order || order._id !== orderId) {
+            dispatch(getOrderDetails(orderId));
+        }
         // eslint-disable-next-line
-    }, []);
+    }, [order, orderId]);
 
     return loading ? (
         <Loader />
@@ -63,7 +65,9 @@ const OrderScreen = ({ match }) => {
                                     Delivered on {order.deliveredAt}
                                 </Message>
                             ) : (
-                                <Message variant="danger">Not Delivered</Message>
+                                <Message variant="danger">
+                                    Not Delivered
+                                </Message>
                             )}
                         </ListGroup.Item>
                         <ListGroup.Item>
