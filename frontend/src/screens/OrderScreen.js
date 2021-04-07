@@ -31,7 +31,7 @@ const OrderScreen = ({ match }) => {
             dispatch(getOrderDetails(orderId));
         }
         // eslint-disable-next-line
-    }, [dispatch,order, orderId]);
+    }, [dispatch, order, orderId]);
 
     return loading ? (
         <Loader />
