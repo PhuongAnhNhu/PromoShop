@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { PayPalButton } from 'react-paypal-button-v2';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { Link } from 'react-router-dom';
 import { Row, Image, Card, Col, ListGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +12,7 @@ import { ORDER_PAY_RESET } from '../constants/orderConstants';
 
 const OrderScreen = ({ match }) => {
     const orderId = match.params.id;
-    const [sdkReady, setSdkReady] = useState(false);
+    // const [sdkReady, setSdkReady] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -20,6 +21,9 @@ const OrderScreen = ({ match }) => {
 
     const orderPay = useSelector(state => state.orderPay);
     const { loading: loadingPay, success: successPay } = orderPay;
+
+    const userToken = useSelector(state => state.userLogin);
+    const { userInfo } = userToken;
 
     if (!loading) {
         // Calculate Prices
@@ -35,32 +39,44 @@ const OrderScreen = ({ match }) => {
         );
     }
 
+    const [initialOptions, setInitialOptions] = useState();
+
     useEffect(() => {
-        const addPaypalScript = async () => {
-            const { data: clientId } = await axios.get('/api/config/paypal');
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
-            script.async = true;
-            script.onload = () => {
-                setSdkReady(true);
-            };
-            document.body.appendChild(script);
-        };
+        const client = axios.get('/api/config/paypal').then(({ data }) => {
+            setInitialOptions({
+                'client-id': data,
+                currency: 'USD',
+                intent: 'capture',
+            });
+        });
+    }, []);
+
+    useEffect(() => {
+        // const addPaypalScript = async () => {
+        //     const { data: clientId } = await axios.get('/api/config/paypal');
+        //     const script = document.createElement('script');
+        //     script.type = 'text/javascript';
+        //     script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+        //     script.async = true;
+        //     script.onload = () => {
+        //         setSdkReady(true);
+        //     };
+        //     document.body.appendChild(script);
+        // };
 
         if (!order || successPay) {
-            dispatch({type: ORDER_PAY_RESET})
+            dispatch({ type: ORDER_PAY_RESET });
             dispatch(getOrderDetails(orderId));
-        } else if (!order.isPaid) {
-            if (!window.paypal) {
-                addPaypalScript();
-            } else {
-                setSdkReady(true);
-            }
+            // } else if (!order.isPaid) {
+            //     if (!window.paypal) {
+            //         addPaypalScript();
+            //     } else {
+            //         setSdkReady(true);
+            //     }
         }
-    }, [dispatch, order, orderId, successPay]);
+    }, [dispatch, order, orderId]);
 
-    const successPaymentHandler = (paymentResult) => {
+    const successPaymentHandler = paymentResult => {
         console.log(paymentResult);
         dispatch(payOrder(orderId, paymentResult));
     };
@@ -187,21 +203,47 @@ const OrderScreen = ({ match }) => {
                             </ListGroup.Item>
                             {!order.isPaid && (
                                 <ListGroup.Item>
+                                    {/* 
                                     {loadingPay && <Loader />}
                                     {!sdkReady ? (
                                         <Loader />
                                     ) : (
-                                        <PayPalButton
-                                            amount={order.totalPrice}
-                                            onSuccess={successPaymentHandler}
-                                        ></PayPalButton>
-                                    )}
+                                        <>
+                                            <PayPalButton
+                                                amount={order.totalPrice}
+                                                onSuccess={
+                                                    successPaymentHandler
+                                                }
+                                            ></PayPalButton>
+                                        </>
+                                    )} */}
+                                    <PayPalScriptProvider
+                                        options={initialOptions}
+                                    >
+                                        <PayPalButtons
+                                            createOrder={(data, actions) => {
+                                                return actions.order.create({
+                                                    purchase_units: [
+                                                        {
+                                                            amount: {
+                                                                value: order.totalPrice,
+                                                            },
+                                                        },
+                                                    ],
+                                                });
+                                            }}
+                                           onApprove={(data, actions) => {
+                                               return actions.order.capture().then(successPaymentHandler)
+                                           }}
+                                        />
+                                    </PayPalScriptProvider>
                                 </ListGroup.Item>
                             )}
                         </ListGroup>
                     </Card>
                 </Col>
             </Row>
+            <div></div>
         </>
     );
 };
