@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { PayPalButton } from 'react-paypal-button-v2';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { Link } from 'react-router-dom';
 import { Row, Image, Card, Col, ListGroup } from 'react-bootstrap';
@@ -9,10 +8,10 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { getOrderDetails, payOrder } from '../actions/orderActions';
 import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import { CART_RESET } from '../constants/cartConstants';
 
 const OrderScreen = ({ match }) => {
     const orderId = match.params.id;
-    // const [sdkReady, setSdkReady] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -21,9 +20,6 @@ const OrderScreen = ({ match }) => {
 
     const orderPay = useSelector(state => state.orderPay);
     const { loading: loadingPay, success: successPay } = orderPay;
-
-    const userToken = useSelector(state => state.userLogin);
-    const { userInfo } = userToken;
 
     if (!loading) {
         // Calculate Prices
@@ -42,7 +38,7 @@ const OrderScreen = ({ match }) => {
     const [initialOptions, setInitialOptions] = useState();
 
     useEffect(() => {
-        const client = axios.get('/api/config/paypal').then(({ data }) => {
+        axios.get('/api/config/paypal').then(({ data }) => {
             setInitialOptions({
                 'client-id': data,
                 currency: 'USD',
@@ -52,32 +48,20 @@ const OrderScreen = ({ match }) => {
     }, []);
 
     useEffect(() => {
-        // const addPaypalScript = async () => {
-        //     const { data: clientId } = await axios.get('/api/config/paypal');
-        //     const script = document.createElement('script');
-        //     script.type = 'text/javascript';
-        //     script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
-        //     script.async = true;
-        //     script.onload = () => {
-        //         setSdkReady(true);
-        //     };
-        //     document.body.appendChild(script);
-        // };
-
-        if (!order || successPay) {
+        if (!order ||  order._id !== orderId || successPay) {
             dispatch({ type: ORDER_PAY_RESET });
             dispatch(getOrderDetails(orderId));
-            // } else if (!order.isPaid) {
-            //     if (!window.paypal) {
-            //         addPaypalScript();
-            //     } else {
-            //         setSdkReady(true);
-            //     }
         }
-    }, [dispatch, order, orderId]);
+    }, [dispatch, order, orderId, successPay]);
+
+    useEffect(() => {
+        if (successPay) {
+            dispatch({ type: CART_RESET });
+        }
+    }, [dispatch, successPay]);
 
     const successPaymentHandler = paymentResult => {
-        console.log(paymentResult);
+        // console.log(paymentResult);
         dispatch(payOrder(orderId, paymentResult));
     };
 
@@ -203,20 +187,7 @@ const OrderScreen = ({ match }) => {
                             </ListGroup.Item>
                             {!order.isPaid && (
                                 <ListGroup.Item>
-                                    {/* 
                                     {loadingPay && <Loader />}
-                                    {!sdkReady ? (
-                                        <Loader />
-                                    ) : (
-                                        <>
-                                            <PayPalButton
-                                                amount={order.totalPrice}
-                                                onSuccess={
-                                                    successPaymentHandler
-                                                }
-                                            ></PayPalButton>
-                                        </>
-                                    )} */}
                                     <PayPalScriptProvider
                                         options={initialOptions}
                                     >
@@ -226,15 +197,20 @@ const OrderScreen = ({ match }) => {
                                                     purchase_units: [
                                                         {
                                                             amount: {
-                                                                value: order.totalPrice,
+                                                                value:
+                                                                    order.totalPrice,
                                                             },
                                                         },
                                                     ],
                                                 });
                                             }}
-                                           onApprove={(data, actions) => {
-                                               return actions.order.capture().then(successPaymentHandler)
-                                           }}
+                                            onApprove={(data, actions) => {
+                                                return actions.order
+                                                    .capture()
+                                                    .then(
+                                                        successPaymentHandler
+                                                    );
+                                            }}
                                         />
                                     </PayPalScriptProvider>
                                 </ListGroup.Item>

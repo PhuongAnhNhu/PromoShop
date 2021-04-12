@@ -29,7 +29,7 @@ const reducer = combineReducers({
     userUpdateProfile: userUpadteProfileReducer,
     orderCreate: orderCreateReducer,
     orderDetails: orderDetailsReducer,
-    orderPay : orderDetailsReducer,
+    orderPay : orderPayReducer,
 });
 
 const cartItemsFromStorage = localStorage.getItem('cartItems')
