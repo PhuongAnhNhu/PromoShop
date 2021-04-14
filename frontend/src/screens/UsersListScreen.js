@@ -6,13 +6,22 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { listUsers } from '../actions/userActions';
 
-const UsersListScreen = () => {
+const UsersListScreen = ({ history }) => {
     const dispatch = useDispatch();
 
     const userList = useSelector(state => state.userList);
     const { loading, error, users } = userList;
 
-    useEffect(() => dispatch(listUsers()), [dispatch]);
+    const userLogin = useSelector(state => state.userLogin);
+    const { userInfo } = userLogin;
+
+    useEffect(() => {
+        if (userInfo && userInfo.isAdmin) {
+            dispatch(listUsers());
+        } else {
+            history.push('/login');
+        }
+    }, [dispatch, history]);
     const deleteHandler = id => {
         console.log('delete');
     };
@@ -33,7 +42,7 @@ const UsersListScreen = () => {
                             <th>ADMIN</th>
                             <th></th>
                         </tr>
-                        </thead>
+                    </thead>
                     <tbody>
                         {users?.map(user => (
                             <tr key={user._id}>
@@ -52,7 +61,7 @@ const UsersListScreen = () => {
                                         ></i>
                                     ) : (
                                         <i
-                                            className="fa fa-time"
+                                            className="fa fa-times"
                                             style={{ color: 'red' }}
                                         ></i>
                                     )}
@@ -79,10 +88,8 @@ const UsersListScreen = () => {
                             </tr>
                         ))}
                     </tbody>
-                   
                 </Table>
             )}
-       
         </div>
     );
 };
