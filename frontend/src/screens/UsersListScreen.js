@@ -19,7 +19,7 @@ const UsersListScreen = ({ history }) => {
     const { success } = userDelete;
 
     useEffect(() => {
-        if ((userInfo && userInfo.isAdmin) || success) {
+        if ((userInfo && userInfo.isAdmin)) {
             console.log(success)
             dispatch(listUsers());
         } else {
