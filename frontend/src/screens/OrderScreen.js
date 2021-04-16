@@ -61,7 +61,6 @@ const OrderScreen = ({ match }) => {
     }, [dispatch, successPay]);
 
     const successPaymentHandler = paymentResult => {
-        // console.log(paymentResult);
         dispatch(payOrder(orderId, paymentResult));
     };
 
