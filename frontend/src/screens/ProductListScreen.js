@@ -4,7 +4,7 @@ import { Button, Table, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listProducts } from '../actions/productActions';
+import { listProducts, deleteProduct } from '../actions/productActions';
 
 const ProductListScreen = ({ history, match }) => {
     const dispatch = useDispatch();
@@ -15,8 +15,12 @@ const ProductListScreen = ({ history, match }) => {
     const userLogin = useSelector(state => state.userLogin);
     const { userInfo } = userLogin;
 
-    // const userDelete = useSelector(state => state.userDelete);
-    // const { success } = userDelete;
+    const productDelete = useSelector(state => state.productDelete);
+    const {
+        loading: loadingDelete,
+        error: errorDelete,
+        success: successDelete,
+    } = productDelete;
 
     useEffect(() => {
         if (userInfo && userInfo.isAdmin) {
@@ -24,16 +28,16 @@ const ProductListScreen = ({ history, match }) => {
         } else {
             history.push('/login');
         }
-    }, [userInfo, history]);
+    }, [userInfo, history, successDelete]);
 
     const deleteHandler = id => {
         if (window.confirm('Are you sure')) {
-            // dispatch(deleteProduct(id));
+            dispatch(deleteProduct(id));
         }
     };
-const createProductHandler = () => {
-    console.log('create product')
-}
+    const createProductHandler = () => {
+        console.log('create product');
+    };
     return (
         <div>
             <Row className="align-item-center">
@@ -46,6 +50,8 @@ const createProductHandler = () => {
                     </Button>
                 </Col>
             </Row>
+            {loadingDelete && <Loader />}
+            {errorDelete && <Message variant="danger">{errorDelete}</Message>}
             {loading ? (
                 <Loader />
             ) : error ? (
@@ -67,12 +73,8 @@ const createProductHandler = () => {
                             <tr key={product._id}>
                                 <td>{product._id}</td>
                                 <td>{product.name}</td>
-                                <td>
-                                    $ {product.price}
-                                </td>
-                                <td>
-                                    {product.category}
-                                </td>
+                                <td>$ {product.price}</td>
+                                <td>{product.category}</td>
                                 <td>{product.brand}</td>
                                 <td>
                                     <LinkContainer
@@ -88,7 +90,9 @@ const createProductHandler = () => {
                                     <Button
                                         variant="danger"
                                         className="btn-sm"
-                                        onClick={() => deleteHandler(product._id)}
+                                        onClick={() =>
+                                            deleteHandler(product._id)
+                                        }
                                     >
                                         <i className="fa fa-trash"></i>
                                     </Button>
