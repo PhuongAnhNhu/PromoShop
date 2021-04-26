@@ -86,7 +86,6 @@ const CartScreen = ({ match, location, history }) => {
                                                     key={index}
                                                     value={x+1}
                                                 >
-                                                    {/* TODO: Anzeigen richtige Einkaufsmenge  */}
                                                    {x+1}
                                                 </option>
                                             ))}
