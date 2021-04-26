@@ -67,7 +67,7 @@ const CartScreen = ({ match, location, history }) => {
                                     <Col md={2}>
                                         <Form.Control
                                             as="select"
-                                            values={item.qty}
+                                            value={item.qty}
                                             onChange={e =>
                                                 dispatch(
                                                     addToCart(
@@ -84,9 +84,9 @@ const CartScreen = ({ match, location, history }) => {
                                             ].map((x, index) => (
                                                 <option
                                                     key={index}
-                                                    value={x +1}
+                                                    value={x+1}
                                                 >
-                                                   {x +1}
+                                                   {x+1}
                                                 </option>
                                             ))}
                                         </Form.Control>
