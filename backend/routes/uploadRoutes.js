@@ -21,9 +21,9 @@ function checkFileType(file, cb) {
     const extname = filetypes.test(
         path.extname(file.originalname.toLowerCase())
     );
-    const minetype = filetypes.test(file.mintype);
+    const mimetype = filetypes.test(file.mimetype);
 
-    if (extname && minetype) {
+    if (extname && mimetype) {
         return cb(null, true);
     } else {
         cb('Image only');
@@ -38,6 +38,6 @@ const upload = multer({
 });
 
 router.post('/', upload.single('image'), (req, res) => {
-    res.send(`${req.file.path}`);
+    res.send(`/${req.file.path}`);
 });
 export default router;
