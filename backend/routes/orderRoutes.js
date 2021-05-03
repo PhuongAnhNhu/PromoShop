@@ -6,12 +6,15 @@ import {
     getOrderById,
     updateOrderToPaid,
     getMyOrders,
+    getOrders,
+    updateOrderToDelivered,
 } from '../controllers/orderController.js';
-import { protect } from '../middleware/authMiddeware.js';
+import { admin, protect } from '../middleware/authMiddeware.js';
 
-router.post('/', protect, addOrdersItems);
+router.route('/').post(protect, addOrdersItems).get(protect, admin, getOrders);
 router.get('/myorders', protect, getMyOrders);
 router.route('/:id').get(protect, getOrderById);
 router.route('/:id/pay').put(protect, updateOrderToPaid);
+router.route('/:id/deliver').put(protect, admin, updateOrderToDelivered);
 
 export default router;
