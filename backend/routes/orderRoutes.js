@@ -10,7 +10,7 @@ import {
 } from '../controllers/orderController.js';
 import { admin, protect } from '../middleware/authMiddeware.js';
 
-router.post('/', protect, addOrdersItems).get(protect, admin, getOrders);
+router.route('/').post(protect, addOrdersItems).get(protect, admin, getOrders);
 router.get('/myorders', protect, getMyOrders);
 router.route('/:id').get(protect, getOrderById);
 router.route('/:id/pay').put(protect, updateOrderToPaid);
