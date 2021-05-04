@@ -2,6 +2,7 @@ import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
+import morgan from 'morgan';
 import colors from 'colors';
 import { notFound, errorHandler } from './middleware/errorMiddlerware.js';
 
@@ -14,6 +15,10 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+if(process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 
 /** accept JSON Data in the body of POST request*/
 app.use(express.json());
@@ -33,8 +38,8 @@ app.get('/api/config/paypal', (req, res) => {
 
 // __dirname only avaiable with common js
 
-const __dirname = path.resolve()
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.use(notFound);
 
