@@ -158,7 +158,7 @@ export const updateProduct = product => async (dispatch, getState) => {
     }
 };
 
-export const createProductReveiw = (productId, review) => async (
+export const createProductReview = (productId, review) => async (
     dispatch,
     getState
 ) => {
