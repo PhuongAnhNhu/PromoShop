@@ -9,26 +9,26 @@ const SearchBox = ({ history }) => {
         //Die trim() Methode gibt eine Zeichenfolge ohne Leerzeichen an beiden Enden zurück.
         if (keyword.trim()) {
             history.push(`/search/${keyword}`);
-        }
-        else{
-            history.push('/')
+        } else {
+            history.push('/');
         }
     };
-    return;
-    <div>
-        <Form onSubmit={submitHandler}>
-            <Form.Control
-                typw="text"
-                name="q"
-                onChange={e => setKeyword(e.target.value)}
-                placeholder="Search Products..."
-                className="mr-sm-2 ml-sm-5"
-            ></Form.Control>
-            <Button type="submit" variant="outline-success" className="p-2">
-                Search
-            </Button>
-        </Form>
-    </div>;
+    return (
+        <div>
+            <Form onSubmit={submitHandler} inline>
+                <Form.Control
+                    typw="text"
+                    name="q"
+                    onChange={e => setKeyword(e.target.value)}
+                    placeholder="Search Products..."
+                    className="mr-sm-1 ml-sm-4"
+                ></Form.Control>
+                <Button type="submit" variant="outline-success" className="p-2">
+                    Search
+                </Button>
+            </Form>
+        </div>
+    );
 };
 
 export default SearchBox;
