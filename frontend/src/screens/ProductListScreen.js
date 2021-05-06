@@ -10,12 +10,14 @@ import {
     createProduct,
 } from '../actions/productActions';
 import { PRODUCT_CREATE_RESET } from '../constants/ProductConstants';
+import Paginate from '../components/Paginate';
 
 const ProductListScreen = ({ history, match }) => {
+    const pageNumber = match.params.pageNumber || 1;
     const dispatch = useDispatch();
 
     const productList = useSelector(state => state.productList);
-    const { loading, error, products } = productList;
+    const { loading, error, products, page, pages } = productList;
 
     const userLogin = useSelector(state => state.userLogin);
     const { userInfo } = userLogin;
@@ -43,9 +45,16 @@ const ProductListScreen = ({ history, match }) => {
         if (successCreate) {
             history.push(`/admin/product/${createdProduct._id}/edit`);
         } else {
-            dispatch(listProducts());
+            dispatch(listProducts('', pageNumber));
         }
-    }, [userInfo, history, successDelete, successCreate, createdProduct]);
+    }, [
+        userInfo,
+        history,
+        successDelete,
+        successCreate,
+        createdProduct,
+        pageNumber,
+    ]);
 
     const deleteHandler = id => {
         if (window.confirm('Are you sure')) {
@@ -76,50 +85,59 @@ const ProductListScreen = ({ history, match }) => {
             ) : error ? (
                 <Message variant="danger">{error}</Message>
             ) : (
-                <Table striped bordered hover responsive className="table-sm">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>NAME</th>
-                            <th>PRICE</th>
-                            <th>CATEGORY</th>
-                            <th>BRAND</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products?.map(product => (
-                            <tr key={product._id}>
-                                <td>{product._id}</td>
-                                <td>{product.name}</td>
-                                <td>$ {product.price}</td>
-                                <td>{product.category}</td>
-                                <td>{product.brand}</td>
-                                <td>
-                                    <LinkContainer
-                                        to={`/admin/product/${product._id}/edit`}
-                                    >
-                                        <Button
-                                            className="btn-sm"
-                                            variant="light"
-                                        >
-                                            <i className="fa fa-edit"></i>
-                                        </Button>
-                                    </LinkContainer>
-                                    <Button
-                                        variant="danger"
-                                        className="btn-sm"
-                                        onClick={() =>
-                                            deleteHandler(product._id)
-                                        }
-                                    >
-                                        <i className="fa fa-trash"></i>
-                                    </Button>
-                                </td>
+                <>
+                    <Table
+                        striped
+                        bordered
+                        hover
+                        responsive
+                        className="table-sm"
+                    >
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>NAME</th>
+                                <th>PRICE</th>
+                                <th>CATEGORY</th>
+                                <th>BRAND</th>
+                                <th></th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {products?.map(product => (
+                                <tr key={product._id}>
+                                    <td>{product._id}</td>
+                                    <td>{product.name}</td>
+                                    <td>$ {product.price}</td>
+                                    <td>{product.category}</td>
+                                    <td>{product.brand}</td>
+                                    <td>
+                                        <LinkContainer
+                                            to={`/admin/product/${product._id}/edit`}
+                                        >
+                                            <Button
+                                                className="btn-sm"
+                                                variant="light"
+                                            >
+                                                <i className="fa fa-edit"></i>
+                                            </Button>
+                                        </LinkContainer>
+                                        <Button
+                                            variant="danger"
+                                            className="btn-sm"
+                                            onClick={() =>
+                                                deleteHandler(product._id)
+                                            }
+                                        >
+                                            <i className="fa fa-trash"></i>
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                    <Paginate pages={pages} page={page} isAdmin={true} />
+                </>
             )}
         </div>
     );

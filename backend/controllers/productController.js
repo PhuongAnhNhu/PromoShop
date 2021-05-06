@@ -5,6 +5,8 @@ import Product from '../models/productModel.js';
 //@route GET /api/products
 //@acess Public
 const getProducts = asyncHandler(async (req, res) => {
+    const page = Number(req.query.pageNumber) || 1;
+    let pageSize = 2;
     const keyword = req.query.keyword
         ? {
               name: {
@@ -13,8 +15,21 @@ const getProducts = asyncHandler(async (req, res) => {
               },
           }
         : {};
-    const products = await Product.find({ ...keyword });
-    res.json(products);
+
+    const count = await Product.countDocuments({ ...keyword });
+
+    if (count <= 5) {
+        pageSize = count;
+    } else {
+        pageSize = 5;
+    }
+
+    const products = await Product.find({ ...keyword })
+        .limit(pageSize)
+        .skip(pageSize * (page - 1));
+
+    // cail: gibt die nächste Ganzzahl, die größer oder gleich der gegebenen Zahl ist, zurück.
+    res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 //@desc Fetch single Products

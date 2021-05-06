@@ -19,11 +19,11 @@ import {
     PRODUCT_UPDATE_SUCCESS,
 } from '../constants/ProductConstants';
 import axios from 'axios';
-export const listProducts = (keyword = '') => async dispatch => {
+export const listProducts = (keyword = '', pageNumber = '') => async dispatch => {
     try {
         dispatch({ type: PRODUCT_LIST_REQUEST });
-        // TODO: /api/products?keyword=${keyword} fragezeichen?
-        const { data } = await axios.get(`/api/products?keyword=${keyword}`);
+        
+        const { data } = await axios.get(`/api/products?keyword=${keyword}&pageNumber=${pageNumber}`);
 
         dispatch({
             type: PRODUCT_LIST_SUCCESS,
