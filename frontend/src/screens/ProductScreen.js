@@ -228,7 +228,7 @@ const ProductScreen = ({ history, match }) => {
                                                     </option>
                                                 </Form.Control>
                                             </Form.Group>
-                                            <Form.Group controId="comment">
+                                            <Form.Group controlId="comment">
                                                 <Form.Label>Comment</Form.Label>
                                                 <Form.Control
                                                     as="textarea"
