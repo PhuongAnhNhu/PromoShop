@@ -55,9 +55,9 @@ const CartScreen = ({ match, location, history }) => {
                       value={item.qty}
                       onChange={e => dispatch(addToCart(item.product, Number(e.target.value)))}
                     >
-                      {[...Array(item.countInStock).keys()].map((x, index) => (
-                        <option key={index} value={x + 1}>
-                          {x + 1}
+                      {[...Array(item.countInStock)].map((x, index) => (
+                        <option key={index} value={index + 1}>
+                          {index + 1}
                         </option>
                       ))}
                     </Form.Control>

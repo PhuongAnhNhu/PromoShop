@@ -3,7 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import FormContainer from '../components/FormContainer';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { saveShppingAddress } from '../actions/cartActions';
+import { saveShoppingAddress } from '../actions/cartActions';
 
 const ShippingScreen = ({ history }) => {
   const cart = useSelector(state => state.cart);
@@ -18,9 +18,10 @@ const ShippingScreen = ({ history }) => {
 
   const submitHandler = e => {
     e.preventDefault();
-    dispatch(saveShppingAddress({ address, city, postalCode, country }));
+    dispatch(saveShoppingAddress({ address, city, postalCode, country }));
     history.push('/payment');
   };
+
   return (
     <FormContainer>
       <CheckoutSteps step1 step2></CheckoutSteps>
