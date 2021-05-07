@@ -4,16 +4,20 @@ import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { logout } from '../actions/userActions';
 import SearchBox from './SearchBox';
+import { useHistory } from 'react-router';
 
 const Header = () => {
   const dispatch = useDispatch();
+  let history = useHistory();
   const userLogin = useSelector(state => state.userLogin);
 
   const { userInfo } = userLogin;
 
   const logoutHandler = () => {
     dispatch(logout());
+    history.push('/');
   };
+  
   return (
     <header>
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
@@ -24,7 +28,6 @@ const Header = () => {
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-              
             <SearchBox />
 
             <Nav className="ml-auto">
