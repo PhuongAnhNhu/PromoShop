@@ -21,7 +21,7 @@ const getProducts = asyncHandler(async (req, res) => {
     if (count <= 5) {
         pageSize = count;
     } else {
-        pageSize = 5;
+        pageSize = 6;
     }
 
     const products = await Product.find({ ...keyword })

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import Rating from './Rating';
+import Rating from '../Rating';
 
 export class Product extends Component {
   render() {
@@ -9,7 +9,7 @@ export class Product extends Component {
     return (
       <Card className="my-3 p-3 rouded">
         <Link to={`/product/${product._id}`}>
-          <Card.Img src={product.image} variant="top"></Card.Img>
+          <Card.Img className="image" src={product.image} variant="top"></Card.Img>
         </Link>
         <Card.Body>
           <Link to={`/product/${product._id}`}>
